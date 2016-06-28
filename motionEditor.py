@@ -5,6 +5,7 @@ import pygame
 from pygame.locals import *
 import PyDimitri
 from PyDimitri import Dimitri, Motion
+from PyDimitri.PyDynamixel import Joint
 from copy import deepcopy
 
 COLS = 20
@@ -61,6 +62,17 @@ class motionEditor(object):
             self.motion.keyframes.append({i:0.0 for i in self.inv_joints.keys()})
 
 
+    def playMotion(self):
+        #ToDo: implement later
+        pass
+
+
+
+    def readFromServo(self, servoID):
+        return Dimitri.joints[servoID].getAngle()
+        #return Joint.receiveAngle()
+
+
     def mainLoop(self):
 
         def getRow(r):
@@ -100,9 +112,17 @@ class motionEditor(object):
                         for i in range(curr, c):
                             #0 = frame time.
                             self.motion.keyframes[i+1][0] = 20* self.motion.period + self.motion.keyframes[i][0]
+
                     #exits the editor
                     elif event.key == pygame.K_ESCAPE:
                         sys.exit()
+
+                    #Press "z" to put angle from servo on current position
+                    elif event.key == pygame.K_z:
+                        self.motion.keyframes[c][joint_id] = self.readFromServo(11)
+
+                    elif event.key == pygame.K_p:
+                        self.playMotion()
 
                     if not outOfBounds(c):
                         #increment / decrement part
@@ -119,7 +139,20 @@ class motionEditor(object):
                         elif event.key == pygame.K_d:
                             self.motion.keyframes[c][joint_id] -= 1
 
+                        # hit backspace to delete current frame
+                        elif event.key == pygame.K_BACKSPACE:
+                            if len(self.motion.keyframes) is not 1:
+                                self.motion.keyframes.__delitem__(c)
+                                if(outOfBounds(c)):
+                                    self.cursor = c-1, r
+                            else:
+                                for a in range(len(self.joints)):
+                                    self.motion.keyframes[c][a] = 0.0
+
             self.display()
+
+
+
     def display(self):
         self.screen.fill((0,0,0))
         normal_color = (127,127,127)
