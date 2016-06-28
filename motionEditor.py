@@ -18,7 +18,32 @@ class motionEditor(object):
         self.font = pygame.font.Font(None, 38)
         self.joints = { \
                 'LEFT_FOOT_ROLL':11, \
-                'RIGHT_LOWER_LEG':12
+                'RIGHT_LOWER_LEG':12 \
+                'RIGHT_FOOT_PITCH' : 13 \
+                'LEFT_FOOT_PITCH' : 14 \
+                'LEFT_LOWER_LEG_SEA' : 111 \
+                'RIGHT_LOWER_LEG_SEA' : 112 \
+                'LEFT_UPPER_LEG_SEA' : 113 \
+                'RIGHT_UPPER_LEG_SEA' : 114 \
+                'LEFT_LEG_ROLL' : 23\
+                'RIGHT_LEG_ROLL' : 24 \
+                'LEFT_LEG_PITCH' : 25 \
+                'RIGHT_LEG_PITCH' : 26 \
+                'LEFT_LEG_YAW' : 27 \
+                'RIGHT_LEG_YAW' : 28 \
+                'LEFT_ARM_ROLL' : 31 \
+                'RIGHT_ARM_ROLL' : 32 \
+                'LEFT_ARM_PITCH' : 33 \
+                'RIGHT_ARM_PITCH' : 34 \
+                'LEFT_ARM_YAW' : 35 \
+                'RIGHT_ARM_YAW' : 36 \
+                'LEFT_ELBOW' : 41 \
+                'RIGHT_ELBOW' : 42 \
+                'WAIST_ROLL': 51 \
+                'WAIST_PITCH' : 52 \
+                'WAIST_YAW' : 53 \
+                'NECK_PITCH' : 61 \
+                'NECK_YAW' : 62 \
                 }
     def mainLoop(self):
         while True:
@@ -39,4 +64,5 @@ class motionEditor(object):
 if __name__ == "__main__":
     app = motionEditor()
     app.mainLoop()
+
 
