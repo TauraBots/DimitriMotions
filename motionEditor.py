@@ -3,8 +3,7 @@
 import sys, os
 import pygame
 from pygame.locals import *
-from PyDimitri import Dimitri
-from motion import motion
+from PyDimitri import Dimitri, Motion
 from copy import deepcopy
 
 COLS = 20
@@ -54,7 +53,7 @@ class motionEditor(object):
         self.inv_joints = {v: k for k, v in self.joints.items()}
         self.cursor = (0,0)
         self.filename = filename
-        self.motion = motion()
+        self.motion = Motion()
         if os.path.isfile(filename):
             self.motion.read(filename)
         else:
