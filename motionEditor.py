@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 
-import sys
+import sys, os
 import pygame
 from pygame.locals import *
 from PyDimitri import Dimitri
+from motion import motion
+from copy import deepcopy
 
 COLS = 20
-ROWS = 27
+ROWS = 28
 
 class motionEditor(object):
     ''' Simple motion editor for Dimitri
     motions.
     '''
-    def __init__(self):
+    def __init__(self, filename):
         pygame.init()
         self.width = 1024
-        self.height = 768
+        self.height = 500
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.dimitri = Dimitri()
         self.font = pygame.font.Font(None, 18)
@@ -46,10 +48,17 @@ class motionEditor(object):
                 'WAIST_PITCH' : 52, \
                 'WAIST_YAW' : 53, \
                 'NECK_PITCH' : 61, \
-                'NECK_YAW' : 62 \
+                'NECK_YAW' : 62, \
+                'DURATION' : 0 \
                 }
         self.inv_joints = {v: k for k, v in self.joints.items()}
         self.cursor = (0,0)
+        self.filename = filename
+        self.motion = motion()
+        if os.path.isfile(filename):
+            self.motion.read(filename)
+        else:
+            self.motion.keyframes.append({i:0.0 for i in self.inv_joints.keys()})
     def mainLoop(self):
         while True:
             for event in pygame.event.get():
@@ -72,6 +81,15 @@ class motionEditor(object):
                         c,r = self.cursor
                         c = (c + 1) % COLS
                         self.cursor = c,r
+                    elif event.key == pygame.K_F10:
+                        self.motion.save(self.filename)
+                    elif event.key == pygame.K_RETURN:
+                        c,r = self.cursor
+                        while len(self.motion.keyframes) <= c:
+                            self.motion.keyframes.append(deepcopy(self.motion.keyframes[-1]))
+                    elif event.key == pygame.K_q:
+                        joint_id = self.inv_joints.keys()[r]
+                        self.motion.keyframes[c][joint_id] += 100.0
             self.display()
     def display(self):
         self.screen.fill((0,0,0))
@@ -84,12 +102,21 @@ class motionEditor(object):
             else:
                 color = normal_color
             self.printText(str(joint)+' '+self.inv_joints[joint], (5,25+15*i), color)
-        for i in range(20):
+        for i in range(COLS):
             if i == c:
                 color = highlight_color
             else:
                 color = normal_color
             self.printText(str(i), (200+40*i,5), color)
+            joint_ids = self.inv_joints.keys()
+            if i < len(self.motion.keyframes):
+                for j in range(ROWS):
+                    if i == c and j == r:
+                        color = highlight_color
+                    else:
+                        color = normal_color
+                    joint_id = joint_ids[j]
+                    self.printText(str(self.motion.keyframes[i][joint_id]), (200+40*i,25+15*j), color)
         pygame.display.flip()
     def printText(self, text, pos, color=(255,255,255)):
         textSurface = self.font.render(text, 1, color)
@@ -98,7 +125,7 @@ class motionEditor(object):
         self.screen.blit(textSurface, rect)
 
 if __name__ == "__main__":
-    app = motionEditor()
+    app = motionEditor(sys.argv[1])
     app.mainLoop()
 
 
