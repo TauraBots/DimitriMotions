@@ -59,37 +59,61 @@ class motionEditor(object):
             self.motion.read(filename)
         else:
             self.motion.keyframes.append({i:0.0 for i in self.inv_joints.keys()})
+
+
     def mainLoop(self):
+
+        def getRow(r):
+            return self.inv_joints.keys()[r]    
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
                 if event.type == pygame.KEYUP:
+                    c,r = self.cursor
+                    joint_id = getRow(r)
                     if event.key == pygame.K_UP:
-                        c,r = self.cursor
                         r = (r - 1) % ROWS
                         self.cursor = c,r
                     elif event.key == pygame.K_DOWN:
-                        c,r = self.cursor
                         r = (r + 1) % ROWS
                         self.cursor = c,r
                     elif event.key == pygame.K_LEFT:
-                        c,r = self.cursor
                         c = (c - 1) % COLS
                         self.cursor = c,r
                     elif event.key == pygame.K_RIGHT:
-                        c,r = self.cursor
                         c = (c + 1) % COLS
                         self.cursor = c,r
                     elif event.key == pygame.K_F10:
                         self.motion.save(self.filename)
+                    
+
+                    #calls jesus' help and saves
                     elif event.key == pygame.K_RETURN:
-                        c,r = self.cursor
+                        curr = len(self.motion.keyframes)
                         while len(self.motion.keyframes) <= c:
                             self.motion.keyframes.append(deepcopy(self.motion.keyframes[-1]))
+                        for i in range(curr+1, c):
+                            self.motion.keyframes[i][self.joints['DURATION']] = 10* self.motion.period + self.motion.keyframes[i-1][self.joints['DURATION']]
+
+                    #increment / decrement part
                     elif event.key == pygame.K_q:
-                        joint_id = self.inv_joints.keys()[r]
                         self.motion.keyframes[c][joint_id] += 100.0
+                    elif event.key == pygame.K_a:
+                        self.motion.keyframes[c][joint_id] -= 100
+                    elif event.key == pygame.K_w:
+                        self.motion.keyframes[c][joint_id] += 10
+                    elif event.key == pygame.K_s:
+                        self.motion.keyframes[c][joint_id] -= 10
+                    elif event.key == pygame.K_e:
+                        self.motion.keyframes[c][joint_id] += 1
+                    elif event.key == pygame.K_d:
+                        self.motion.keyframes[c][joint_id] -= 1
+
+                    #exits the editor
+                    elif event.key == pygame.K_ESCAPE:
+                        sys.exit()
             self.display()
     def display(self):
         self.screen.fill((0,0,0))
