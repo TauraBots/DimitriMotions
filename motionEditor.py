@@ -22,6 +22,7 @@ class motionEditor(object):
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.dimitri = Dimitri()
         self.font = pygame.font.Font(None, 18)
+        self.step = 20
         self.joints = { \
                 'LEFT_FOOT_ROLL':11, \
                 'RIGHT_LOWER_LEG':12, \
@@ -143,11 +144,14 @@ class motionEditor(object):
                         elif event.key == pygame.K_BACKSPACE:
                             if len(self.motion.keyframes) is not 1:
                                 self.motion.keyframes.__delitem__(c)
+                                for i in range(len(self.motion.keyframes)):
+                                    self.motion.keyframes[i][0] = i * self.motion.period *self.step
                                 if(outOfBounds(c)):
                                     self.cursor = c-1, r
                             else:
                                 for a in range(len(self.joints)):
                                     self.motion.keyframes[c][a] = 0.0
+
 
             self.display()
 
