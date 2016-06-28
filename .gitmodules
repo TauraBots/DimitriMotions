@@ -1,0 +1,3 @@
+[submodule "PyDimitri"]
+	path = PyDimitri
+	url = https://github.com/TauraBots/PyDimitri
