@@ -121,6 +121,9 @@ class motionEditor(object):
                     elif event.key == pygame.K_z:
                         self.motion.keyframes[c][joint_id] = self.readFromServo(joint_id)
 
+                    elif event.key == pygame.K_x:
+                        self.motion.keyframes[c].update(deepcopy(self.dimitri.getPose()))
+
                     elif event.key == pygame.K_p:
                         self.playMotion()
 
