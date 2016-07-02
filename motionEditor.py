@@ -3,7 +3,6 @@
 import sys, os
 import pygame
 from pygame.locals import *
-import PyDimitri
 from PyDimitri import Dimitri, Motion
 from PyDimitri.PyDynamixel import Joint
 from copy import deepcopy
@@ -77,7 +76,7 @@ class motionEditor(object):
     def mainLoop(self):
 
         def getRow(r):
-            return self.inv_joints.keys()[r]    
+            return self.inv_joints.keys()[r]
 
         def outOfBounds(col):
             return (len(self.motion.keyframes) <= col)
@@ -86,7 +85,7 @@ class motionEditor(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-                if event.type == pygame.KEYUP:
+                if event.type == pygame.KEYDOWN:
                     c,r = self.cursor
                     joint_id = getRow(r)
                     if event.key == pygame.K_UP:
@@ -103,7 +102,7 @@ class motionEditor(object):
                         self.cursor = c,r
                     elif event.key == pygame.K_F10:
                         self.motion.save(self.filename)
-                    
+
 
                     #calls jesus' help and saves
                     elif event.key == pygame.K_RETURN:
@@ -149,8 +148,12 @@ class motionEditor(object):
                                 if(outOfBounds(c)):
                                     self.cursor = c-1, r
                             else:
-                                for a in range(len(self.joints)):
-                                    self.motion.keyframes[c][a] = 0.0
+                                #try to put all content of array to 0
+                                for a in range(253):
+                                    try:
+                                        self.motion.keyframes[c][a] = 0.0
+                                    except IndexError:
+                                        print 'Index not in array'
 
 
             self.display()
@@ -193,5 +196,3 @@ class motionEditor(object):
 if __name__ == "__main__":
     app = motionEditor(sys.argv[1])
     app.mainLoop()
-
-
