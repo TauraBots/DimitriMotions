@@ -10,6 +10,7 @@ from math import pi
 
 COLS = 20
 ROWS = 28
+INCREMENT = pi/180.0
 
 class motionEditor(object):
     ''' Simple motion editor for Dimitri
@@ -28,10 +29,10 @@ class motionEditor(object):
                 'LEFT_FOOT_ROLL':12, \
                 'RIGHT_FOOT_PITCH' : 13, \
                 'LEFT_FOOT_PITCH' : 14, \
-        		'RIGHT_LOWER_LEG' : 15, \
-        		'LEFT_LOWER_LEG' : 16, \
-        		'RIGHT_UPPER_LEG' : 21, \
-        		'LEFT_UPPER_LEG' : 22, \
+        	'RIGHT_LOWER_LEG' : 15, \
+        	'LEFT_LOWER_LEG' : 16, \
+        	'RIGHT_UPPER_LEG' : 21, \
+        	'LEFT_UPPER_LEG' : 22, \
                 'RIGHT_LEG_ROLL' : 23, \
                 'LEFT_LEG_ROLL' : 24, \
                 'RIGHT_LEG_PITCH' : 25, \
@@ -65,7 +66,7 @@ class motionEditor(object):
 
 
     def playMotion(self):
-        #ToDo: implement later
+        
         pass
 
     def readFromServo(self, servoID):
@@ -103,7 +104,11 @@ class motionEditor(object):
                         self.cursor = c,r
                     elif event.key == pygame.K_F10:
                         self.motion.save(self.filename)
-
+                    elif event.key == pygame.K_DELETE:
+                        print "Disable torque"
+                        self.dimitri.disableTorques()
+                    elif event.key == pygame.K_v:
+                        self.dimitri.setPose(self.motion.keyframes[c])
 
                     #calls jesus' help and saves
                     elif event.key == pygame.K_RETURN:
@@ -126,23 +131,26 @@ class motionEditor(object):
                     elif event.key == pygame.K_x:
                         self.motion.keyframes[c].update(deepcopy(self.dimitri.getPose()))
 
+                    elif event.key == pygame.K_c:
+                        self.dimitri.joints[joint_id].sendGoalAngle(self.motion.keyframes[c][joint_id])
+
                     elif event.key == pygame.K_p:
                         self.playMotion()
 
                     if not outOfBounds(c):
                         #increment / decrement part
                         if event.key == pygame.K_q:
-                            self.motion.keyframes[c][joint_id] += 100.0
+                            self.motion.keyfrKames[c][joint_id] += 100*INCREMENT
                         elif event.key == pygame.K_a:
-                            self.motion.keyframes[c][joint_id] -= 100
+                            self.motion.keyframes[c][joint_id] -= 100*INCREMENT
                         elif event.key == pygame.K_w:
-                            self.motion.keyframes[c][joint_id] += 10
+                            self.motion.keyframes[c][joint_id] += 10*INCREMENT
                         elif event.key == pygame.K_s:
-                            self.motion.keyframes[c][joint_id] -= 10
+                            self.motion.keyframes[c][joint_id] -= 10*INCREMENT
                         elif event.key == pygame.K_e:
-                            self.motion.keyframes[c][joint_id] += 1
+                            self.motion.keyframes[c][joint_id] += 1*INCREMENT
                         elif event.key == pygame.K_d:
-                            self.motion.keyframes[c][joint_id] -= 1
+                            self.motion.keyframes[c][joint_id] -= 1*INCREMENT
 
                         # hit backspace to delete current frame
                         elif event.key == pygame.K_BACKSPACE:
