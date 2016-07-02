@@ -6,6 +6,7 @@ from pygame.locals import *
 from PyDimitri import Dimitri, Motion
 from PyDimitri.PyDynamixel import Joint
 from copy import deepcopy
+from math import pi
 
 COLS = 20
 ROWS = 28
@@ -187,7 +188,7 @@ class motionEditor(object):
                   joint_id = joint_ids[j]
                 except IndexError:
                   pass
-	        self.printText(str(self.motion.keyframes[i][joint_id]), (200+40*i,25+15*j), color)
+	        self.printText('%3.0f' % (180*self.motion.keyframes[i][joint_id]/pi), (200+40*i,25+15*j), color)
         pygame.display.flip()
     def printText(self, text, pos, color=(255,255,255)):
         textSurface = self.font.render(text, 1, color)
