@@ -23,28 +23,28 @@ class motionEditor(object):
         self.font = pygame.font.Font(None, 18)
         self.step = 20
         self.joints = { \
+                'RIGHT_FOOT_ROLL':11, \
                 'LEFT_FOOT_ROLL':11, \
-                'RIGHT_LOWER_LEG':12, \
                 'RIGHT_FOOT_PITCH' : 13, \
                 'LEFT_FOOT_PITCH' : 14, \
-                'LEFT_LOWER_LEG_SEA' : 111, \
-                'RIGHT_LOWER_LEG_SEA' : 112, \
-                'LEFT_UPPER_LEG_SEA' : 113, \
-                'RIGHT_UPPER_LEG_SEA' : 114, \
-                'LEFT_LEG_ROLL' : 23, \
-                'RIGHT_LEG_ROLL' : 24, \
-                'LEFT_LEG_PITCH' : 25, \
-                'RIGHT_LEG_PITCH' : 26, \
-                'LEFT_LEG_YAW' : 27, \
-                'RIGHT_LEG_YAW' : 28, \
-                'LEFT_ARM_ROLL' : 31, \
-                'RIGHT_ARM_ROLL' : 32, \
-                'LEFT_ARM_PITCH' : 33, \
-                'RIGHT_ARM_PITCH' : 34, \
-                'LEFT_ARM_YAW' : 35, \
-                'RIGHT_ARM_YAW' : 36, \
-                'LEFT_ELBOW' : 41, \
-                'RIGHT_ELBOW' : 42, \
+		'RIGHT_LOWER_LEG' : 15, \
+		'LEFT_LOWER_LEG' : 16, \
+		'RIGHT_UPPER_LEG' : 21, \
+		'LEFT_UPPER_LEG' : 22, \
+                'RIGHT_LEG_ROLL' : 23, \
+                'LEFT_LEG_ROLL' : 24, \
+                'RIGHT_LEG_PITCH' : 25, \
+                'LEFT_LEG_PITCH' : 26, \
+                'RIGHT_LEG_YAW' : 27, \
+                'LEFT_LEG_YAW' : 28, \
+                'RIGHT_ARM_ROLL' : 31, \
+                'LEFT_ARM_ROLL' : 32, \
+                'RIGHT_ARM_PITCH' : 33, \
+                'LEFT_ARM_PITCH' : 34, \
+                'RIGHT_ARM_YAW' : 35, \
+                'LEFT_ARM_YAW' : 36, \
+                'RIGHT_ELBOW' : 41, \
+                'LEFT_ELBOW' : 42, \
                 'WAIST_ROLL': 51, \
                 'WAIST_PITCH' : 52, \
                 'WAIST_YAW' : 53, \
@@ -66,12 +66,11 @@ class motionEditor(object):
         #ToDo: implement later
         pass
 
-
-
     def readFromServo(self, servoID):
-        return Dimitri.joints[servoID].getAngle()
+        angle = Dimitri.joints[servoID].receiveCurrAngle()
+        print angle
+        return angle
         #return Joint.receiveAngle()
-
 
     def mainLoop(self):
 
@@ -119,7 +118,7 @@ class motionEditor(object):
 
                     #Press "z" to put angle from servo on current position
                     elif event.key == pygame.K_z:
-                        self.motion.keyframes[c][joint_id] = self.readFromServo(11)
+                        self.motion.keyframes[c][joint_id] = self.readFromServo(joint_id)
 
                     elif event.key == pygame.K_p:
                         self.playMotion()
@@ -179,13 +178,16 @@ class motionEditor(object):
             self.printText(str(i), (200+40*i,5), color)
             joint_ids = self.inv_joints.keys()
             if i < len(self.motion.keyframes):
-                for j in range(ROWS):
-                    if i == c and j == r:
-                        color = highlight_color
-                    else:
-                        color = normal_color
-                    joint_id = joint_ids[j]
-                    self.printText(str(self.motion.keyframes[i][joint_id]), (200+40*i,25+15*j), color)
+              for j in range(ROWS):
+                if i == c and j == r:
+                  color = highlight_color
+                else:
+                  color = normal_color
+                try:
+                  joint_id = joint_ids[j]
+                except IndexError:
+                  pass
+	        self.printText(str(self.motion.keyframes[i][joint_id]), (200+40*i,25+15*j), color)
         pygame.display.flip()
     def printText(self, text, pos, color=(255,255,255)):
         textSurface = self.font.render(text, 1, color)
