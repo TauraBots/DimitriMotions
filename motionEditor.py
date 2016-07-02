@@ -25,7 +25,7 @@ class motionEditor(object):
         self.step = 20
         self.joints = { \
                 'RIGHT_FOOT_ROLL':11, \
-                'LEFT_FOOT_ROLL':11, \
+                'LEFT_FOOT_ROLL':12, \
                 'RIGHT_FOOT_PITCH' : 13, \
                 'LEFT_FOOT_PITCH' : 14, \
 		'RIGHT_LOWER_LEG' : 15, \
