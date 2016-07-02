@@ -28,10 +28,10 @@ class motionEditor(object):
                 'LEFT_FOOT_ROLL':12, \
                 'RIGHT_FOOT_PITCH' : 13, \
                 'LEFT_FOOT_PITCH' : 14, \
-		'RIGHT_LOWER_LEG' : 15, \
-		'LEFT_LOWER_LEG' : 16, \
-		'RIGHT_UPPER_LEG' : 21, \
-		'LEFT_UPPER_LEG' : 22, \
+        		'RIGHT_LOWER_LEG' : 15, \
+        		'LEFT_LOWER_LEG' : 16, \
+        		'RIGHT_UPPER_LEG' : 21, \
+        		'LEFT_UPPER_LEG' : 22, \
                 'RIGHT_LEG_ROLL' : 23, \
                 'LEFT_LEG_ROLL' : 24, \
                 'RIGHT_LEG_PITCH' : 25, \
@@ -54,13 +54,14 @@ class motionEditor(object):
                 'DURATION' : 0 \
                 }
         self.inv_joints = {v: k for k, v in self.joints.items()}
-        self.cursor = (0,0)
+        self.cursor = (0,1)
         self.filename = filename
         self.motion = Motion()
         if os.path.isfile(filename):
             self.motion.read(filename)
         else:
             self.motion.keyframes.append({i:0.0 for i in self.inv_joints.keys()})
+            self.motion.keyframes[0][0] = 20*self.motion.period
 
 
     def playMotion(self):
@@ -111,7 +112,8 @@ class motionEditor(object):
                             self.motion.keyframes.append(deepcopy(self.motion.keyframes[-1]))
                         for i in range(curr, c):
                             #0 = frame time.
-                            self.motion.keyframes[i+1][0] = 20* self.motion.period + self.motion.keyframes[i][0]
+                            self.motion.keyframes[i+1][0] = 20* self.motion.period
+                            print self.motion.period
 
                     #exits the editor
                     elif event.key == pygame.K_ESCAPE:
@@ -146,8 +148,6 @@ class motionEditor(object):
                         elif event.key == pygame.K_BACKSPACE:
                             if len(self.motion.keyframes) is not 1:
                                 self.motion.keyframes.__delitem__(c)
-                                for i in range(len(self.motion.keyframes)):
-                                    self.motion.keyframes[i][0] = i * self.motion.period *self.step
                                 if(outOfBounds(c)):
                                     self.cursor = c-1, r
                             else:
@@ -191,7 +191,10 @@ class motionEditor(object):
                   joint_id = joint_ids[j]
                 except IndexError:
                   pass
-	        self.printText('%3.0f' % (180*self.motion.keyframes[i][joint_id]/pi), (200+40*i,25+15*j), color)
+                if joint_id != 0:
+                  self.printText('%3.0f' % (180*self.motion.keyframes[i][joint_id]/pi), (200+40*i,25+15*j), color)
+                else:
+                  self.printText('%3.0f' % (self.motion.keyframes[i][joint_id]), (200+40*i,25+15*j), color)
         pygame.display.flip()
     def printText(self, text, pos, color=(255,255,255)):
         textSurface = self.font.render(text, 1, color)
