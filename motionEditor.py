@@ -66,8 +66,8 @@ class motionEditor(object):
 
 
     def playMotion(self):
-        
-        pass
+        self.playMotion(self.filename)
+
 
     def readFromServo(self, servoID):
         angle = Dimitri.joints[servoID].receiveCurrAngle()
