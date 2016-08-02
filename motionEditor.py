@@ -66,7 +66,7 @@ class motionEditor(object):
 
 
     def playMotion(self):
-        self.playMotion(self.filename)
+        self.playMotion()
 
 
     def readFromServo(self, servoID):
@@ -140,7 +140,7 @@ class motionEditor(object):
                     if not outOfBounds(c):
                         #increment / decrement part
                         if event.key == pygame.K_q:
-                            self.motion.keyfrKames[c][joint_id] += 100*INCREMENT
+                            self.motion.keyframes[c][joint_id] += 100*INCREMENT
                         elif event.key == pygame.K_a:
                             self.motion.keyframes[c][joint_id] -= 100*INCREMENT
                         elif event.key == pygame.K_w:
