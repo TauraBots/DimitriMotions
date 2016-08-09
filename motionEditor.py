@@ -21,7 +21,7 @@ class motionEditor(object):
         self.width = 1024
         self.height = 500
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.dimitri = Dimitri()
+        self.dimitri = Dimitri(1)
         self.font = pygame.font.Font(None, 18)
         self.step = 20
         self.joints = { \
@@ -65,9 +65,9 @@ class motionEditor(object):
             self.motion.keyframes[0][0] = 20*self.motion.period
 
 
-    def playMotion(self):
-        self.playMotion()
 
+    def playMotion(self):
+        self.dimitri.playMotion(self.motion)
 
     def readFromServo(self, servoID):
         angle = Dimitri.joints[servoID].receiveCurrAngle()
@@ -107,6 +107,8 @@ class motionEditor(object):
                     elif event.key == pygame.K_DELETE:
                         print "Disable torque"
                         self.dimitri.disableTorques()
+                    elif event.key == pygame.K_INSERT:
+                        self.dimitri.enableTorques()
                     elif event.key == pygame.K_v:
                         self.dimitri.setPose(self.motion.keyframes[c])
 
@@ -165,6 +167,8 @@ class motionEditor(object):
                                         self.motion.keyframes[c][a] = 0.0
                                     except IndexError:
                                         print 'Index not in array'
+                                    #time fix in first frame when deleting
+                                    self.motion.keyframes[c][0] = 20 * self.motion.period
 
 
             self.display()
