@@ -84,6 +84,7 @@ class motionEditor(object):
             return (len(self.motion.keyframes) <= col)
 
         while True:
+            os.system("stty -F /dev/ttyUSB0 1000000")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
