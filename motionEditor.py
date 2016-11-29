@@ -106,9 +106,12 @@ class motionEditor(object):
                     elif event.key == pygame.K_F10:
                         self.motion.save(self.filename)
                     elif event.key == pygame.K_DELETE:
-                        print "Disable torque"
-                        self.dimitri.disableTorques()
+                        self.dimitri.joints[joint_id].disableTorque()
                     elif event.key == pygame.K_INSERT:
+                        self.dimitri.joints[joint_id].enableTorque()
+                    elif event.key == pygame.K_END:
+                        self.dimitri.disableTorques()
+                    elif event.key == pygame.K_HOME:
                         self.dimitri.enableTorques()
                     elif event.key == pygame.K_v:
                         self.dimitri.setPose(self.motion.keyframes[c])
